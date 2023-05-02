@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cursos.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Ensalamento</title>
+    <link rel="stylesheet" href="../sala/sala.css">
+</head>
+<body>
+    <div class="menu">
+        <nav  id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Ensalamento</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+               <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="../index.html">Cadastro de Horarios</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link"  href="../Professores/professores.html">Cadastro de Professores</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../sala/sala.html">Cadastro de Sala</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../Desafios/desafio.html">Cadastro de Desafios</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" id="Periodo" href="../periodos/periodos.html">Cadastro de Periodos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " href="../cursos/cursos.html">Cadastro de Cursos</a>
+                  </li>
+                 
+                </ul>
+              </div>
+            </div>
+            
+          </nav>
+          <button class="btn btn-success text-light mt-3 mb-3" id="abrir-modal">Cadastrar</button>
+<div id="fade" class="esconder"></div>
+<div class="esconder" id="modal">
+    <div class="hearder">
+        <h2>cadastro</h2>
+        <button id="fecha-modal">fechar</button>
+    </div>
+<div id="bodymodal">
+  <div class="center">
+    <form class="row g-3">
+      <div class="col-12">
+        <label for="inputEmail4" class="form-label">Nome do periodo</label>
+        <input type="text" class="form-control" id="nomePeriodo" placeholder="Nome Completo">
+      </div>
+      
+     
+     
+      
+      
+  </div>
+    </form>
+  
+  <div class="col-12">
+      <button type="submit" class="btn btn-primary" id="submit">Enviar</button>
+    </div>
+    
+</div>
+</div>
+<script src="../LSSQL.js"></script>
+  <script src="../script.js"></script>
+          
+          
+</body>
+</html>
