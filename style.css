@@ -1,0 +1,128 @@
+.center{
+  width: 90%;
+  margin-left: 50px;
+  margin-top: 50px;
+}
+#submit{
+  margin-left: 20px;
+  margin-top: 60px;
+}
+.center2{
+  margin-left: 50px;
+  margin-top: 60px;
+}
+#a{
+  margin-top: 40px;
+}
+*{
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+body{
+  padding: 1rem;
+}
+h1{
+  margin-bottom: 1rem;
+}
+button{
+  /* padding: .6rem 1.2rem;;
+  background-color: aqua;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: .7;
+  font-size: 1rem;
+  transition: .4s; */
+}
+#abrir-modal, button{
+  color:dimgray;
+}
+#fade, #modal{
+  transition: .5s;
+  opacity: 1;
+  pointer-events: all;
+}
+#abrir-modal:hover ,button:hover{
+  opacity: 100;
+  font-size: 20px;
+ 
+}
+#fade{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 5;
+}
+#modal{
+  position: fixed;
+  transform: translate(-50%,-50%);
+  background-color: aliceblue;
+  left: 50%;
+  top:50%;
+  z-index: 10;
+  padding: 1.3rem;
+  border-radius: 5px;
+}
+#modal.esconder,#fade.esconder{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+
+}
+#modal.esconder{
+  top:0;
+}
+#abrir-modal{
+  border-radius: 10px;
+}
+/* .tabel{
+  border: solid black 1px;
+  position: relative;
+  top: 70px;
+  width: 100%;
+  height: 100%;
+  padding: 240px;
+  background-color: #ccc;
+} */
+body{
+  background-color: rgb(36, 33, 33);
+}
+#nav{
+  border-radius: 6px;
+  background-color: black;
+}
+#SalvarSala,#submit{
+  background-color: chartreuse;
+}
+.col-md-6{
+  position: relative;
+  display: flex;
+  text-align: center;
+}
+#modal{
+  background-color: rgb(36, 33, 33);
+  color: aliceblue;
+  position: relative;
+  border-radius: 5px;
+  top: 100px;
+
+}
+#fecha-modal{
+  padding: .6rem 1.2rem;;
+  background-color: rgb(224, 226, 226);
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: .7;
+  font-size: 1rem;
+  transition: .4s;
+  position: unset;
+  left: 150px;
+  top: 235px;
+  
+}
