@@ -21,8 +21,8 @@ class Sql {
     /*Comandos*/
     const linhasRegex = /insert\s+into\s+(\w+)\s+values\(([\s\S]+)\)/gi;
   //   const selectAllRegex = /select\s+\*\s+from\s+(\w+)/gi;
-    const selectAllRegex = /select\s+\*\s+from\s+(\w+)\s*(?!\w*(?:join)\w*)/gi
-    const selectColumnsRegex = /select\s+([\w\s,]+)\s+from\s+(\w+)\s*(?!.*\bjoin\b)/gi;
+    const selectAllRegex = /select\s+\*\s+from\s+(\w+)\s*(?!\w*(?:join)\w*)\s*(on table (?:html|json))?/
+    const selectColumnsRegex = /select\s+([\w\s,]+)\s+from\s+(\w+)\s*(?!.*\bjoin\b)\s*(on table (?:html|json))?/gi;
     const dropTableRegex = /drop\s+table\s+(\w+)/gi;
   //   const updateRegex = /update\s+(\w+)\s+set\s+(\w+)\s*=\s*([^ ]+)\s+where\s+(\w+)\s*=\s*([^ ]+)/gi;
     const updateRegex = /update\s+(\w+)\s+set\s+(\w+)\s*=\s*("[^"]+"|'[^']+'|[^ ]+)\s+where\s+(\w+)\s*=\s*("[^"]+"|'[^']+'|[^ ]+)/gi;
@@ -31,11 +31,12 @@ class Sql {
     const createTableIfNotExistRegex = /^\s*CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\s+(\w+)\s*\(([^)]+)\)\s*;?\s*$/i
 
   //   const joinRegex = /select\s+(.*)\s+from\s+(\w+)\s+join\s+(\w+)\s+on\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/gi;
-    const SelectjoinRegex = /select\s+(.*)\s+from\s+((?:\w+\s*,\s*)*\w+)\s+((?:join\s+\w+\s+on\s+\w+\.\w+\s*=\s*\w+\.\w+\s*)+)/gi;
+    const SelectjoinRegex = /select\s+(.*)\s+from\s+((?:\w+\s*,\s*)*\w+)\s+((?:join\s+\w+\s+on\s+\w+\.\w+\s*=\s*\w+\.\w+\s*)+)(on table (?:html|json))?/gi;
     const joinRegex = /join\s+([\w,]+)\s+on\s+([\w]+\.[\w]+)\s*=\s*([\w]+\.[\w]+)/gi;
 
   /*FUNÇÕES*/
   let match;
+  let result;
 
   /*COMANDOS*/
   // console.log(comando.length)
@@ -102,6 +103,8 @@ class Sql {
     const joins = [];    
     const fields = [];    
     const columns = match[1].split(',').map(c => c.trim());
+    console.log(match[4])
+    const type = match[4] 
 
     /*Função Left com Join*/
     for (let col of columns) {
@@ -128,9 +131,9 @@ class Sql {
   //   console.log("tables"+tables);
   //   console.log(joins);
   //  this.join(tables, columns, joins)
-   this.join(tables, columns, joins,fields)
-
+    result = this.join(tables, columns, joins,fields, type)
     error = 0;
+    return result;
    }
 
    /* SELECT COM * */
@@ -139,7 +142,11 @@ class Sql {
     if (match) {
       // console.log("Passei aqui")
       const nome = match[1];
-      this.select(nome);
+      const type = match[2];
+      console.log(match)
+      const result=this.select(nome,null,type);
+
+      return result;
 
       error=0;
     }
@@ -150,7 +157,9 @@ class Sql {
     if (match) {
       const colunas = match[1].split(",").map(c => c.trim());
       const nome = match[2];
-      this.select(nome, colunas);
+      const type = match[3];
+      const result = this.select(nome, colunas, type);
+      return result;
       error=0;
     }
 
@@ -246,9 +255,10 @@ class Sql {
       }
     }
 
-static join(tables, columns, joins,fields) {
+static join(tables, columns, joins,fields, type) {
   let data = null;
   let tableIndex = 0;
+  let column_increment = null;
 
   for (const table of tables) {
       const tableData = JSON.parse(localStorage.getItem(table));
@@ -295,36 +305,78 @@ static join(tables, columns, joins,fields) {
       return obj;
   });
 
-  console.log(result)
-  const table = document.createElement('table');
-  table.classList.add('table')
-  table.classList.add('table-dark')
+  // console.log(result)
+  if(type == 'on table html'){
+    const table = document.createElement('table');
+    table.classList.add('table')
+    table.classList.add('table-dark')
+    
+    // console.log(result[1])
   
-  // console.log(result[1])
-
-  const headerRow = document.createElement('tr');
-  for (const column in result[0]) {
-    // console.log("Cabeçalho"+column)
-    const headerCell = document.createElement('th');
-    headerCell.textContent = column
-    headerRow.appendChild(headerCell);
-  }
-  table.appendChild(headerRow);
-
-  for (const item of result) {
-    const row = document.createElement('tr');
-    for (const column in item) {
-      const cell = document.createElement('td');
-      cell.textContent = item[column];
-      row.appendChild(cell);
+    const headerRow = document.createElement('tr');
+    for (const column in result[0]) {
+      // console.log("Cabeçalho"+column)
+      const headerCell = document.createElement('th');
+      headerCell.textContent = column
+      headerRow.appendChild(headerCell);
     }
-    table.appendChild(row);
-  }
+    table.appendChild(headerRow);
   
-  document.body.appendChild(table);
+    for (const item of result) {
+      const row = document.createElement('tr');
+      for (const column in item) {
+        const cell = document.createElement('td');
+        cell.textContent = item[column];
+        row.appendChild(cell);
+            
+        if (column.includes('auto_increment')) {
+          column_increment = column
+        }
 
+
+
+      }
+      table.appendChild(row);
+      const excluirCell = document.createElement('td');
+      const excluirButton = document.createElement('button');
+      excluirButton.classList.add('btn', 'btn-danger');
+      excluirButton.id = 'delete';
+      excluirButton.textContent = 'Excluir';
+      excluirButton.setAttribute('data-id', item[column_increment]);
+
+      excluirCell.appendChild(excluirButton);
+      row.appendChild(excluirCell);
+    }
+
+
+    // 
+    
+    document.body.appendChild(table);
+  }
+ 
+  return result;
 }
-static select(nome, colunas) {
+  
+static selectjson(nome, colunas) {
+  const linhas = JSON.parse(localStorage.getItem(nome)) || [];
+  let result;
+  
+  if (colunas) {
+    result = linhas.map(linha => {
+      const novaLinha = {};
+      for (let i = 0; i < colunas.length; i++) {
+        novaLinha[colunas[i]] = linha[colunas[i]];
+      }
+      return novaLinha;
+    });
+    return result;
+  } else {
+    result = linhas;
+    return result;
+  }
+}
+
+static select(nome, colunas, type) {
   const linhas = JSON.parse(localStorage.getItem(nome)) || [];
   let result;
   
@@ -339,82 +391,87 @@ static select(nome, colunas) {
   } else {
     result = linhas;
   }
-  const table = document.createElement('table');
-  table.classList.add('table')
-  table.classList.add('table-dark')
-  
-  const headerRow = document.createElement('tr');
-  for (const column in result[0]) {
-    const headerCell = document.createElement('th');
-    headerCell.textContent = column;
-    headerRow.appendChild(headerCell);
+  console.log('here'+type)
+  if(type == 'on table html'){
+    const table = document.createElement('table');
+    table.classList.add('table')
+    table.classList.add('table-dark')
+    
+    const headerRow = document.createElement('tr');
+    for (const column in result[0]) {
+      const headerCell = document.createElement('th');
+      headerCell.textContent = column;
+      headerRow.appendChild(headerCell);
+    }
+    
+    const enviarCellHeader = document.createElement('th');
+    enviarCellHeader.textContent = "Enviar";
+    headerRow.appendChild(enviarCellHeader);
+    
+    const editarCellHeader = document.createElement('th');
+    editarCellHeader.textContent = "Editar";
+    headerRow.appendChild(editarCellHeader);
+    
+    const excluirCellHeader = document.createElement('th');
+    excluirCellHeader.textContent = "Excluir";
+    headerRow.appendChild(excluirCellHeader);
+    
+    table.appendChild(headerRow);
+    let column_increment = null;
+    
+    for (const item of result) {
+    
+      const row = document.createElement('tr');
+      for (const column in item) {
+        const cell = document.createElement('td');
+        cell.textContent = item[column];
+        cell.setAttribute('data-coluna', column);
+        row.appendChild(cell);
+    
+        if (column.includes('auto_increment')) {
+          column_increment = column
+        }
+    
+      }
+    
+      /* BOTÃO EDITAR */
+      const editarCell = document.createElement('td');
+      const editarButton = document.createElement('button');
+      editarButton.classList.add('btn', 'btn-warning');
+      editarButton.textContent = 'Editar';
+      editarButton.id = 'editar';
+      editarButton.setAttribute('data-id', item[column_increment]);
+    
+      /* BOTÃO ENVIAR */
+      const enviarCell = document.createElement('td');
+      const enviarButton = document.createElement('button');
+      enviarButton.classList.add('btn', 'btn-primary');
+      enviarButton.textContent = 'Enviar';
+      enviarButton.id = 'enviar';
+      enviarCell.appendChild(enviarButton);
+      row.appendChild(enviarCell);
+      enviarButton.setAttribute('data-id', item[column_increment]);
+    
+      editarCell.appendChild(editarButton);
+      row.appendChild(editarCell);
+    
+      /* BOTÃO EXCLUIR */
+      const excluirCell = document.createElement('td');
+      const excluirButton = document.createElement('button');
+      excluirButton.classList.add('btn', 'btn-danger');
+      excluirButton.textContent = 'Excluir';
+      excluirButton.id = 'delete';
+      excluirCell.appendChild(excluirButton);
+      excluirButton.setAttribute('data-id', item[column_increment]);
+      row.appendChild(excluirCell);
+    
+      table.appendChild(row);
+    }  
+    document.body.appendChild(table);
   }
   
-  const enviarCellHeader = document.createElement('th');
-  enviarCellHeader.textContent = "Enviar";
-  headerRow.appendChild(enviarCellHeader);
-  
-  const editarCellHeader = document.createElement('th');
-  editarCellHeader.textContent = "Editar";
-  headerRow.appendChild(editarCellHeader);
-  
-  const excluirCellHeader = document.createElement('th');
-  excluirCellHeader.textContent = "Excluir";
-  headerRow.appendChild(excluirCellHeader);
-  
-  table.appendChild(headerRow);
-  let column_increment = null;
-  
-  for (const item of result) {
-  
-    const row = document.createElement('tr');
-    for (const column in item) {
-      const cell = document.createElement('td');
-      cell.textContent = item[column];
-      cell.setAttribute('data-coluna', column);
-      row.appendChild(cell);
-  
-      if (column.includes('auto_increment')) {
-        column_increment = column
-      }
-  
-    }
-  
-    /* BOTÃO EDITAR */
-    const editarCell = document.createElement('td');
-    const editarButton = document.createElement('button');
-    editarButton.classList.add('btn', 'btn-warning');
-    editarButton.textContent = 'Editar';
-    editarButton.id = 'editar';
-    editarButton.setAttribute('data-id', item[column_increment]);
-  
-    /* BOTÃO ENVIAR */
-    const enviarCell = document.createElement('td');
-    const enviarButton = document.createElement('button');
-    enviarButton.classList.add('btn', 'btn-primary');
-    enviarButton.textContent = 'Enviar';
-    enviarButton.id = 'enviar';
-    enviarCell.appendChild(enviarButton);
-    row.appendChild(enviarCell);
-    enviarButton.setAttribute('data-id', item[column_increment]);
-  
-    editarCell.appendChild(editarButton);
-    row.appendChild(editarCell);
-  
-    /* BOTÃO EXCLUIR */
-    const excluirCell = document.createElement('td');
-    const excluirButton = document.createElement('button');
-    excluirButton.classList.add('btn', 'btn-danger');
-    excluirButton.textContent = 'Excluir';
-    excluirButton.id = 'delete';
-    excluirCell.appendChild(excluirButton);
-    excluirButton.setAttribute('data-id', item[column_increment]);
-    row.appendChild(excluirCell);
-  
-    table.appendChild(row);
-  }  
-  
-  document.body.appendChild(table);
+  return result
+
 }
 
   static drop(nome) {

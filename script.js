@@ -15,9 +15,13 @@ const toggleModal = () => {
 /*Código Inicial*/
 tabela = document.querySelector('.nav-item a.active').id
 
+let Table;
+
+/*Ensalamento*/
 if(tabela == 'Ensalamento'){
 SQL = `
-select nomeCurso,
+select idEnsalamento auto_increment,
+       nomeCurso,
        NomeProfessor,
        numeroSala,
        nomeDesafio,
@@ -29,20 +33,65 @@ from Ensalamento
  join Curso on Curso.idCurso = Ensalamento.idCurso
  join Professor on Professor.idProfessor = Ensalamento.idProfessor
  join Desafio on Desafio.idDesafio = Ensalamento.idDesafio
- join Sala on Sala.idSala = Ensalamento.idSala
+ join Sala on Sala.idSala = Ensalamento.idSala on table html
     `
 Sql.execute(SQL);  
-}else{
-    SQL = `select * from ${tabela}`
-    Sql.execute(SQL);    
+
+/*Curso para select*/
+Curso = document.getElementById('Curso')
+Table = Sql.execute('select idCurso auto_increment,nomeCurso from Curso on table json');
+for(const item of Table){
+    option = document.createElement('option')
+    option.id = item['idCurso auto_increment']
+    option.textContent = item['nomeCurso'];
+    Curso.appendChild(option)
+}
+/*Professor*/
+Professor = document.getElementById('Professor')
+Table = Sql.execute('select idProfessor auto_increment,NomeProfessor from Professor on table json');
+for(const item of Table){
+    option = document.createElement('option')
+    option.id = item['idProfessor auto_increment']
+    option.textContent = item['NomeProfessor'];
+    Professor.appendChild(option)
+}
+/*Sala*/
+Sala = document.getElementById('Sala')
+Table = Sql.execute('select idSala auto_increment,numeroSala from Sala on table json');
+for(const item of Table){
+    option = document.createElement('option')
+    option.id = item['idSala auto_increment']
+    option.textContent = item['numeroSala'];
+    Sala.appendChild(option)
+}
+/*Desafio*/
+Desafio = document.getElementById('Desafio')
+Table = Sql.execute('select idDesafio auto_increment,nomeDesafio from Desafio on table json');
+for(const item of Table){
+    option = document.createElement('option')
+    option.id = item['idDesafio auto_increment']
+    option.textContent = item['nomeDesafio'];
+    Desafio.appendChild(option)
 }
 
-// for (const curso of cursos) {
-//   const option = document.createElement('option');
-//   option.value = curso.id;
-//   option.textContent = curso.nome;
-//   select.appendChild(option);
-// }
+/*Periodo*/
+Periodo = document.getElementById('Periodo')
+Table = Sql.execute('select idPeriodo auto_increment,nomePeriodo from Periodo on table json');
+for(const item of Table){
+    option = document.createElement('option')
+    option.id = item['idPeriodo auto_increment']
+    option.textContent = item['nomePeriodo'];
+    Periodo.appendChild(option)
+}
+
+
+}else{
+    SQL = `select * from ${tabela} on table html`
+    Table = Sql.execute(SQL);
+    console.log(Table)
+}
+
+// console.log("Table Len: "+Table[0]);
 
 const UpdateTable = () =>{
     location.reload();
@@ -206,88 +255,138 @@ if(tabela=='Desafio'){
         
 })    
 }
+/*Cadastro*/
+if(tabela=='Ensalamento'){
+    document.getElementById('submit').addEventListener('click', ()=>{
+
+        const CursoId = document.getElementById('Curso').options[document.getElementById('Curso').selectedIndex].id;
+        const ProfessorId = document.getElementById('Professor').options[document.getElementById('Professor').selectedIndex].id;
+        const SalaId = document.getElementById('Sala').options[document.getElementById('Sala').selectedIndex].id;
+        const DesafioId = document.getElementById('Desafio').options[document.getElementById('Desafio').selectedIndex].id;
+        const PeriodoId = document.getElementById('Periodo').options[document.getElementById('Periodo').selectedIndex].id;
+        let Data = document.getElementById('Data').value
+        let HoraInicio = document.getElementById('HoraInicio').value
+        let HoraFim = document.getElementById('HoraFim').value
+
+        if(Data == ''){
+            Data = '0000-00-00'
+        }
+
+        if(HoraInicio == ''){
+            HoraInicio = '00:00'
+        }
+
+        if(HoraFim == ''){
+            HoraFim = '00:00'
+        }
+
+
+        // create table if not exists Ensalamento(
+        //     idEnsalamento auto_increment,
+        //     dataCadastro,
+        //     dataEnsalamento,
+        //     horainicio,
+        //     horafim,
+        //     idProfessor,
+        //     idSala,
+        //     idDesafio,
+        //     idPeriodo,
+        //     idCurso
+        // );
+
+        SQL = `
+        insert into Ensalamento values(
+            getdate(),${Data},${HoraInicio},${HoraFim},${ProfessorId},${SalaId},${DesafioId},${PeriodoId},${CursoId}
+        );
+        `;
+        Sql.execute(SQL);
+
+    UpdateTable();
+        
+    })    
+}
 
 /*SCRIPT DE PADRONIZAÇÃO LSSQL*/
-SQL = `
-#deletar a tabela antes de criar;
-#drop table Professor;
-#drop table Sala;
-#drop table Desafio;
-#drop table Periodo;
-#drop table Curso;
-drop table Ensalamento;
+// SQL = `
+// #deletar a tabela antes de criar;
+// #drop table Professor;
+// #drop table Sala;
+// #drop table Desafio;
+// #drop table Periodo;
+// #drop table Curso;
+// #drop table Ensalamento;
 
 
-create table if not exists Professor(
-    idProfessor auto_increment,
-    NomeProfessor,
-    formacaoProfessor,
-    emailProfessor
-);
-create table if not exists Sala(
-    idSala auto_increment,
-    numeroSala
-);
-create table if not exists Desafio(
-    idDesafio auto_increment,
-    nomeDesafio,
-    areaDesafio
-);
-create table if not exists Periodo(
-    idPeriodo auto_increment,
-    nomePeriodo
-);
-create table if not exists Curso(
-    idCurso auto_increment,
-    nomeCurso,
-    idProfessor
-);
-create table if not exists Ensalamento(
-    idEnsalamento auto_increment,
-    dataCadastro,
-    dataEnsalamento,
-    horainicio,
-    horafim,
-    idProfessor,
-    idSala,
-    idDesafio,
-    idPeriodo,
-    idCurso
-);
+// create table if not exists Professor(
+//     idProfessor auto_increment,
+//     NomeProfessor,
+//     formacaoProfessor,
+//     emailProfessor
+// );
+// create table if not exists Sala(
+//     idSala auto_increment,
+//     numeroSala
+// );
+// create table if not exists Desafio(
+//     idDesafio auto_increment,
+//     nomeDesafio,
+//     areaDesafio
+// );
+// create table if not exists Periodo(
+//     idPeriodo auto_increment,
+//     nomePeriodo
+// );
+// create table if not exists Curso(
+//     idCurso auto_increment,
+//     nomeCurso,
+//     idProfessor
+// );
+// create table if not exists Ensalamento(
+//     idEnsalamento auto_increment,
+//     dataCadastro,
+//     dataEnsalamento,
+//     horainicio,
+//     horafim,
+//     idProfessor,
+//     idSala,
+//     idDesafio,
+//     idPeriodo,
+//     idCurso
+// );
 
-#insert into Periodo values(3periodo);
-#insert into Curso values(TI);
-#insert into Curso values(ENG);
-#insert into Curso values(ADM);
-#insert into Professor values(James, Sistema de Informação, james@unisales.br);
-#insert into Professor values(Renan, Ciências da Computação, Renan@unisales.br);
-#insert into Professor values(Romulo, Ciências da Computação, Romulo@unisales.br);
+// #insert into Periodo values(3periodo);
+// #insert into Curso values(TI);
+// #insert into Curso values(ENG);
+// #insert into Curso values(ADM);
+// #insert into Professor values(James, Sistema de Informação, james@unisales.br);
+// #insert into Professor values(Renan, Ciências da Computação, Renan@unisales.br);
+// #insert into Professor values(Romulo, Ciências da Computação, Romulo@unisales.br);
 
-#insert into Sala values(354);
+// #insert into Sala values(354);
 
-#insert into Desafio values(FrontEnd, Sistema de Informação);
-#insert into Desafio values(BackEnd, Sistema de Informação);
-#insert into Desafio values(Banco de Dados, Sistema de Informação);
-#select * from Desafio;
-#select * from Professor;
+// #insert into Desafio values(FrontEnd, Sistema de Informação);
+// #insert into Desafio values(BackEnd, Sistema de Informação);
+// #insert into Desafio values(Banco de Dados, Sistema de Informação);
+// #select * from Desafio;
+// #select * from Professor;
 
-insert into Ensalamento values(
-    getdate(),getdate(),05:50,6:40,1,1,1,1,2
-);
+// #insert into Ensalamento values(
+//     getdate(),getdate(),05:50,6:40,1,1,1,1,2
+// );
 
-insert into Ensalamento values(
-  getdate(),getdate(),06:40,7:20,3,1,2,1,1
-);
+// #insert into Ensalamento values(
+//   getdate(),getdate(),06:40,7:20,3,1,2,1,1
+// );
 
-insert into Ensalamento values(
-  getdate(),getdate(),03:50,4:20,3,1,3,1,1
-);
+// #insert into Ensalamento values(
+//   getdate(),getdate(),03:50,4:20,3,1,3,1,1
+// );
 
-#select * from Ensalamento;
-
-
-`
+// #select * from Ensalamento;
 
 
+// `
 
-Sql.execute(SQL);
+
+
+// Sql.execute(SQL);
