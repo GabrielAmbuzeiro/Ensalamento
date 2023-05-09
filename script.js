@@ -306,32 +306,38 @@ if(tabela=='Ensalamento'){
     })    
 }
 
+
 /*SCRIPT DE PADRONIZAÇÃO LSSQL*/
- SQL = `
- #deletar a tabela antes de criar;
- #drop table Professor;
- #drop table Sala;
- #drop table Desafio;
- #drop table Periodo;
- #drop table Curso;
- #drop table Ensalamento;
+SQL = `
+#deletar a tabela antes de criar;
+#drop table Professor;
+#drop table Sala;
+#drop table Desafio;
+#drop table Periodo;
+#drop table Curso;
+#drop table Ensalamento;
 
 
- create table if not exists Professor(
-     idProfessor auto_increment,
-     NomeProfessor,
-     formacaoProfessor,
-     emailProfessor
- );
- create table if not exists Sala(
-     idSala auto_increment,
-     numeroSala
- );
- create table if not exists Desafio(
-     idDesafio auto_increment,
-     nomeDesafio,
-     areaDesafio
- );
+create table if not exists Professor(
+    idProfessor auto_increment,
+    NomeProfessor,
+    formacaoProfessor,
+    emailProfessor
+);
+create table if not exists Sala(
+    idSala auto_increment,
+    numeroSala
+);
+create table if not exists Desafio(
+    idDesafio auto_increment,
+    nomeDesafio,
+    areaDesafio
+);
+create table if not exists Periodo(
+    idPeriodo auto_increment,
+    nomePeriodo
+);
+create table if not exists Curso(
     idCurso auto_increment,
     nomeCurso,
     idProfessor
@@ -379,4 +385,8 @@ create table if not exists Ensalamento(
 
 #select * from Ensalamento;
 `
+
+
+
 Sql.execute(SQL);
+
