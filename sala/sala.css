@@ -64,10 +64,10 @@ button{
     overflow-y: scroll;
     background-color: aliceblue;
     left: 50%;
-    width: 300px;
-    height: 420px;
-    left:calc(50% - 300px/2);
-    top:0;
+    width: 561px;
+    height: 426px;
+    left: calc(50% - 488px/2);
+    top: 0;
     z-index: 10;
     padding: 10px;
     border-radius: 5px;
