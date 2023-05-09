@@ -307,86 +307,76 @@ if(tabela=='Ensalamento'){
 }
 
 /*SCRIPT DE PADRONIZAÇÃO LSSQL*/
-// SQL = `
-// #deletar a tabela antes de criar;
-// #drop table Professor;
-// #drop table Sala;
-// #drop table Desafio;
-// #drop table Periodo;
-// #drop table Curso;
-// #drop table Ensalamento;
+ SQL = `
+ #deletar a tabela antes de criar;
+ #drop table Professor;
+ #drop table Sala;
+ #drop table Desafio;
+ #drop table Periodo;
+ #drop table Curso;
+ #drop table Ensalamento;
 
 
-// create table if not exists Professor(
-//     idProfessor auto_increment,
-//     NomeProfessor,
-//     formacaoProfessor,
-//     emailProfessor
-// );
-// create table if not exists Sala(
-//     idSala auto_increment,
-//     numeroSala
-// );
-// create table if not exists Desafio(
-//     idDesafio auto_increment,
-//     nomeDesafio,
-//     areaDesafio
-// );
-// create table if not exists Periodo(
-//     idPeriodo auto_increment,
-//     nomePeriodo
-// );
-// create table if not exists Curso(
-//     idCurso auto_increment,
-//     nomeCurso,
-//     idProfessor
-// );
-// create table if not exists Ensalamento(
-//     idEnsalamento auto_increment,
-//     dataCadastro,
-//     dataEnsalamento,
-//     horainicio,
-//     horafim,
-//     idProfessor,
-//     idSala,
-//     idDesafio,
-//     idPeriodo,
-//     idCurso
-// );
+ create table if not exists Professor(
+     idProfessor auto_increment,
+     NomeProfessor,
+     formacaoProfessor,
+     emailProfessor
+ );
+ create table if not exists Sala(
+     idSala auto_increment,
+     numeroSala
+ );
+ create table if not exists Desafio(
+     idDesafio auto_increment,
+     nomeDesafio,
+     areaDesafio
+ );
+    idCurso auto_increment,
+    nomeCurso,
+    idProfessor
+);
+create table if not exists Ensalamento(
+    idEnsalamento auto_increment,
+    dataCadastro,
+    dataEnsalamento,
+    horainicio,
+    horafim,
+    idProfessor,
+    idSala,
+    idDesafio,
+    idPeriodo,
+    idCurso
+);
 
-// #insert into Periodo values(3periodo);
-// #insert into Curso values(TI);
-// #insert into Curso values(ENG);
-// #insert into Curso values(ADM);
-// #insert into Professor values(James, Sistema de Informação, james@unisales.br);
-// #insert into Professor values(Renan, Ciências da Computação, Renan@unisales.br);
-// #insert into Professor values(Romulo, Ciências da Computação, Romulo@unisales.br);
+#insert into Periodo values(3periodo);
+#insert into Curso values(TI);
+#insert into Curso values(ENG);
+#insert into Curso values(ADM);
+#insert into Professor values(James, Sistema de Informação, james@unisales.br);
+#insert into Professor values(Renan, Ciências da Computação, Renan@unisales.br);
+#insert into Professor values(Romulo, Ciências da Computação, Romulo@unisales.br);
 
-// #insert into Sala values(354);
+#insert into Sala values(354);
 
-// #insert into Desafio values(FrontEnd, Sistema de Informação);
-// #insert into Desafio values(BackEnd, Sistema de Informação);
-// #insert into Desafio values(Banco de Dados, Sistema de Informação);
-// #select * from Desafio;
-// #select * from Professor;
+#insert into Desafio values(FrontEnd, Sistema de Informação);
+#insert into Desafio values(BackEnd, Sistema de Informação);
+#insert into Desafio values(Banco de Dados, Sistema de Informação);
+#select * from Desafio;
+#select * from Professor;
 
-// #insert into Ensalamento values(
-//     getdate(),getdate(),05:50,6:40,1,1,1,1,2
-// );
+#insert into Ensalamento values(
+    getdate(),getdate(),05:50,6:40,1,1,1,1,2
+);
 
-// #insert into Ensalamento values(
-//   getdate(),getdate(),06:40,7:20,3,1,2,1,1
-// );
+#insert into Ensalamento values(
+  getdate(),getdate(),06:40,7:20,3,1,2,1,1
+);
 
-// #insert into Ensalamento values(
-//   getdate(),getdate(),03:50,4:20,3,1,3,1,1
-// );
+#insert into Ensalamento values(
+  getdate(),getdate(),03:50,4:20,3,1,3,1,1
+);
 
-// #select * from Ensalamento;
-
-
-// `
-
-
-
-// Sql.execute(SQL);
+#select * from Ensalamento;
+`
+Sql.execute(SQL);
